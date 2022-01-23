@@ -15,10 +15,6 @@ public class Handler implements Runnable {
         out = new DataOutputStream(socket.getOutputStream());
     }
 
-    public Handler() {
-
-    }
-
     @Override
     public void run() {
         try {
@@ -31,10 +27,5 @@ public class Handler implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void receivedClientFile() throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/fileFromClient.txt"));
-        in.readObject();
     }
 }

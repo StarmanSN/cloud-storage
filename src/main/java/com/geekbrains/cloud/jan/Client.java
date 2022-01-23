@@ -20,9 +20,6 @@ public class Client implements Initializable {
     private DataInputStream in;
     private DataOutputStream out;
 
-    public Client() {
-    }
-
     public void sendMessage(ActionEvent actionEvent) throws IOException {
         String text = textField.getText();
         textField.clear();
