@@ -13,6 +13,6 @@ public class App extends Application {
         Parent parent = FXMLLoader.load(getClass().getResource("layout.fxml"));
         primaryStage.setScene(new Scene(parent));
         primaryStage.show();
-        primaryStage.setTitle("ICQ");
+        primaryStage.setTitle("Application");
     }
 }

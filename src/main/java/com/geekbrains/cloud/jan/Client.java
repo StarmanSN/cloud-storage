@@ -3,44 +3,89 @@ package com.geekbrains.cloud.jan;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 public class Client implements Initializable {
 
-    public TextField textField;
-    public ListView<String> listView;
-    public Button button;
+
+    public TextField clientPath;
+    public TextField serverPath;
+    private Path clientDir;
+    public ListView<String> clientView;
+    public ListView<String> serverView;
     private DataInputStream in;
     private DataOutputStream out;
+    private byte[] buf;
 
-    public void sendMessage(ActionEvent actionEvent) throws IOException {
-        String text = textField.getText();
-        textField.clear();
-        out.writeUTF(text);
-        out.flush();
-    }
 
+    /**
+     * read from network
+     */
     private void readLoop() {
         try {
             while (true) {
-                String message = in.readUTF();
-                Platform.runLater(() -> listView.getItems().add(message));
+                String command = in.readUTF();
+                System.out.println("received: " + command);
+                if (command.equals("#list#")) {
+                    Platform.runLater(() -> serverView.getItems().clear());
+                    int filesCount = in.readInt();
+                    for (int i = 0; i < filesCount; i++) {
+                        String fileName = in.readUTF();
+                        Platform.runLater(() -> serverView.getItems().add(fileName));
+                    }
+                } else if (command.equals("#file#")) {
+                    Sender.getFile(in, clientDir, Constants.SIZE, buf);
+                    Platform.runLater(this::updateClientView);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    private void updateClientView() {
+        try {
+            clientView.getItems().clear();
+            Files.list(clientDir)
+                    .map(p -> p.getFileName().toString())
+                    .forEach(f -> clientView.getItems().add(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setClientPath() {
+        clientPath.appendText(String.valueOf(clientDir.getParent()));
+
+    }
+
+    private void setServerPath() throws IOException {
+        clientDir = Paths.get("data");
+        serverPath.appendText(String.valueOf(clientDir.toAbsolutePath()));
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            buf = new byte[Constants.SIZE];
+            clientDir = Paths.get(System.getProperty("user.home"));
+            updateClientView();
+            setClientPath();
+            setServerPath();
             Socket socket = new Socket(Constants.SERVER_ADRESS, Constants.SERVER_PORT);
             System.out.println("Network created...");
             in = new DataInputStream(socket.getInputStream());
@@ -53,8 +98,39 @@ public class Client implements Initializable {
         }
     }
 
-    public void sendFile(ActionEvent actionEvent) throws IOException {
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/fileFromClient.txt"));
-        out.writeObject(textField.getText());
+    /**
+     * Upload file from client
+     */
+    public void upload(ActionEvent actionEvent) throws IOException {
+        String fileName = clientView.getSelectionModel().getSelectedItem();
+        Sender.sendFile(fileName, out, clientDir);
+    }
+
+    /**
+     * Download file from server
+     */
+    public void download(ActionEvent actionEvent) throws IOException {
+        String fileName = serverView.getSelectionModel().getSelectedItem();
+        out.writeUTF("#get_file#");
+        out.writeUTF(fileName);
+        out.flush();
+    }
+
+    /**
+     * В процессе...
+     */
+    public void back(ActionEvent actionEvent) {
+
+        Path path = Paths.get("data");
+        Path root = path.resolve("..");
+    }
+
+    public void openDirectory() {
+
+    }
+
+
+    public void enterToDirectory(MouseEvent mouseEvent) throws IOException {
+
     }
 }

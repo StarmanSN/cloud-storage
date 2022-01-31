@@ -3,12 +3,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="387.0"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.geekbrains.cloud.jan.Client">
-   <children>
-      <TextField onAction="#sendMessage" fx:id="textField" layoutX="19.0" layoutY="442.0" prefHeight="25.0" prefWidth="258.0" />
-      <ListView fx:id="listView" layoutX="19.0" layoutY="14.0" prefHeight="413.0" prefWidth="349.0" />
-      <Button onAction="#sendFile" fx:id="button" layoutX="292.0" layoutY="442.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Send" />
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.geekbrains.cloud.jan.Client">
+
+      <ListView fx:id="clientView" layoutX="14.0" layoutY="41.0" prefHeight="348.0" prefWidth="248.0" onMouseClicked="#enterToDirectory"/>
+      <ListView fx:id="serverView" layoutX="338.0" layoutY="41.0" prefHeight="348.0" prefWidth="248.0" onMouseClicked="#enterToDirectory"/>
+      <Button layoutX="280.0" layoutY="120.0" mnemonicParsing="false" onAction="#upload" prefHeight="40.0" prefWidth="40.0" text="&gt;" />
+      <Button layoutX="280.0" layoutY="221.0" mnemonicParsing="false" onAction="#download" prefHeight="40.0" prefWidth="40.0" text="&lt;" />
+   <Button onAction="#back" layoutX="221.0" layoutY="14.0" mnemonicParsing="false" text="Back" />
+   <Button onAction="#back" layoutX="545.0" layoutY="14.0" mnemonicParsing="false" text="Back" />
+   <TextField fx:id="clientPath" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="197.0" />
+   <TextField fx:id="serverPath" layoutX="338.0" layoutY="14.0" prefHeight="25.0" prefWidth="197.0" />
+
 </AnchorPane>
