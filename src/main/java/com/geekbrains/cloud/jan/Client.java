@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
 
 public class Client implements Initializable {
 
-
     public TextField clientPath;
     public TextField serverPath;
     private Path clientDir;
@@ -28,7 +27,6 @@ public class Client implements Initializable {
     private DataInputStream in;
     private DataOutputStream out;
     private byte[] buf;
-
 
     /**
      * read from network
@@ -55,7 +53,6 @@ public class Client implements Initializable {
         }
     }
 
-
     private void updateClientView() {
         try {
             clientView.getItems().clear();
@@ -68,11 +65,13 @@ public class Client implements Initializable {
     }
 
     private void setClientPath() {
-        clientPath.appendText(String.valueOf(clientDir.getParent()));
+            clientPath.clear();
+            clientPath.appendText(String.valueOf(clientDir));
 
     }
 
     private void setServerPath() throws IOException {
+        serverPath.clear();
         clientDir = Paths.get("data");
         serverPath.appendText(String.valueOf(clientDir.toAbsolutePath()));
 
@@ -116,21 +115,43 @@ public class Client implements Initializable {
         out.flush();
     }
 
+    public void backClientPath(ActionEvent actionEvent) {
+        String str = clientPath.getText();
+        int position = -1;
+        for (int i = str.length(); position < 0; i--) {
+            position = str.indexOf("\\", i);
+        }
+        clientPath.clear();
+        clientPath.appendText(str.substring(0, position));
+        clientDir = Paths.get(clientPath.getText());
+    }
+
+    public void backServerPath(ActionEvent actionEvent) {
+        String str = serverPath.getText();
+        int position = -1;
+        for (int i = str.length(); position < 0; i--) {
+            position = str.indexOf("\\", i);
+        }
+        serverPath.clear();
+        serverPath.appendText(str.substring(0, position));
+        try {
+            out.writeUTF(serverPath.getText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * В процессе...
      */
-    public void back(ActionEvent actionEvent) {
-
-        Path path = Paths.get("data");
-        Path root = path.resolve("..");
-    }
 
     public void openDirectory() {
 
     }
 
-
     public void enterToDirectory(MouseEvent mouseEvent) throws IOException {
 
     }
+
+
 }
