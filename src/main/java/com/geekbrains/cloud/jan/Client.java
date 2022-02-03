@@ -1,14 +1,22 @@
 package com.geekbrains.cloud.jan;
 
+import com.geekbrains.cloud.jan.model.CloudMessage;
+import com.geekbrains.cloud.jan.model.FileMessage;
+import com.geekbrains.cloud.jan.model.FileRequest;
+import com.geekbrains.cloud.jan.model.ListMessage;
+import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
+import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
@@ -17,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
+@Slf4j
 public class Client implements Initializable {
 
     public TextField clientPath;
@@ -24,9 +33,10 @@ public class Client implements Initializable {
     private Path clientDir;
     public ListView<String> clientView;
     public ListView<String> serverView;
-    private DataInputStream in;
-    private DataOutputStream out;
-    private byte[] buf;
+    private ObjectDecoderInputStream in;
+    private ObjectEncoderOutputStream out;
+    private CloudMessageProcessor processor;
+    /*private byte[] buf;*/
 
     /**
      * read from network
@@ -34,23 +44,29 @@ public class Client implements Initializable {
     private void readLoop() {
         try {
             while (true) {
-                String command = in.readUTF();
-                System.out.println("received: " + command);
-                if (command.equals("#list#")) {
+                /*String command = in.readUTF();*/
+                CloudMessage message = (CloudMessage) in.readObject();
+                /*System.out.println("received: " + command);*/
+                log.info("received: {}", message);
+                processor.processMessage(message);
+            }
+                /*if (command.equals("#list#")) {
                     Platform.runLater(() -> serverView.getItems().clear());
                     int filesCount = in.readInt();
                     for (int i = 0; i < filesCount; i++) {
                         String fileName = in.readUTF();
                         Platform.runLater(() -> serverView.getItems().add(fileName));
-                    }
-                } else if (command.equals("#file#")) {
+                    }*/
+                /*} else if (command.equals("#file#")) {
                     Sender.getFile(in, clientDir, Constants.SIZE, buf);
                     Platform.runLater(this::updateClientView);
-                }
-            }
-        } catch (Exception e) {
+                }*/
+
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void updateClientView() {
@@ -65,8 +81,8 @@ public class Client implements Initializable {
     }
 
     private void setClientPath() {
-            clientPath.clear();
-            clientPath.appendText(String.valueOf(clientDir));
+        clientPath.clear();
+        clientPath.appendText(String.valueOf(clientDir));
 
     }
 
@@ -80,15 +96,17 @@ public class Client implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            buf = new byte[Constants.SIZE];
+            /*buf = new byte[Constants.SIZE];*/
             clientDir = Paths.get(System.getProperty("user.home"));
             updateClientView();
+            initMouseListeners();
             setClientPath();
             setServerPath();
+            processor = new CloudMessageProcessor(clientDir, clientView, serverView);
             Socket socket = new Socket(Constants.SERVER_ADRESS, Constants.SERVER_PORT);
             System.out.println("Network created...");
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+            out = new ObjectEncoderOutputStream(socket.getOutputStream());
+            in = new ObjectDecoderInputStream(socket.getInputStream());
             Thread readThread = new Thread(this::readLoop);
             readThread.setDaemon(true);
             readThread.start();
@@ -97,12 +115,36 @@ public class Client implements Initializable {
         }
     }
 
+    private void initMouseListeners() {
+
+        clientView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                Path current = clientDir.resolve(getItem());
+                if (Files.isDirectory(current)) {
+                    clientDir = current;
+                    Platform.runLater(this::updateClientView);
+                }
+            }
+        });
+
+        serverView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+
+            }
+        });
+    }
+
+    private String getItem() {
+        return clientView.getSelectionModel().getSelectedItem();
+    }
+
     /**
      * Upload file from client
      */
     public void upload(ActionEvent actionEvent) throws IOException {
         String fileName = clientView.getSelectionModel().getSelectedItem();
-        Sender.sendFile(fileName, out, clientDir);
+        out.writeObject(new FileMessage(clientDir.resolve(fileName)));
+        /*Sender.sendFile(fileName, out, clientDir);*/
     }
 
     /**
@@ -110,9 +152,10 @@ public class Client implements Initializable {
      */
     public void download(ActionEvent actionEvent) throws IOException {
         String fileName = serverView.getSelectionModel().getSelectedItem();
-        out.writeUTF("#get_file#");
+        out.writeObject(new FileRequest(fileName));
+        /*out.writeUTF("#get_file#");
         out.writeUTF(fileName);
-        out.flush();
+        out.flush();*/
     }
 
     public void backClientPath(ActionEvent actionEvent) {
@@ -141,6 +184,7 @@ public class Client implements Initializable {
         }
 
     }
+
     /**
      * В процессе...
      */
