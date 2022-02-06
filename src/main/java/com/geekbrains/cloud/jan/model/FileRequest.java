@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class FileRequest implements CloudMessage {
 
-    private final String  fileName;
+    private final String fileName;
 
     @Override
     public CommandType getType() {

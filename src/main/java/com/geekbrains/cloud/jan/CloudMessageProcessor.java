@@ -31,13 +31,15 @@ public class CloudMessageProcessor {
             case FILE:
                 processMessage((FileMessage) message);
                 break;
+            case FILE_REQUEST:
+                processMessage((FileRequest) message);
+                break;
         }
     }
 
     public void processMessage(FileMessage message) throws IOException {
         Files.write(clientDir.resolve(message.getFileName()), message.getBytes());
         Platform.runLater(this::updateClientView);
-
     }
 
     public void processMessage(ListMessage message) {
@@ -57,5 +59,4 @@ public class CloudMessageProcessor {
             e.printStackTrace();
         }
     }
-
 }

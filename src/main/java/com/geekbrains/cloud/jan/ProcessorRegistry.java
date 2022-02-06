@@ -18,6 +18,6 @@ public class ProcessorRegistry {
     }
 
     public void process(CloudMessage msg) {
-        map.get(msg.getType().processMessage);
+        map.get(msg.getType()).processMessage(msg);
     }
 }

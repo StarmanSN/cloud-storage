@@ -14,9 +14,11 @@ import static com.geekbrains.cloud.jan.Sender.sendFile;
 public class Handler implements Runnable {
 
     private Path clientDir;
+    private Path rootDir;
     private DataInputStream in;
     private DataOutputStream out;
     private final byte[] buf;
+    private String enterDir;
 
     public Handler(Socket socket) throws IOException {
         in = new DataInputStream(socket.getInputStream());
@@ -50,6 +52,13 @@ public class Handler implements Runnable {
                 } else if (command.equals("#get_file#")) {
                     String fileName = in.readUTF();
                     sendFile(fileName, out, clientDir);
+                } else if (command.equals("#backDir")) {
+                    if (!clientDir.equals(rootDir)) {
+                        clientDir = clientDir.getParent();
+                    }
+                    sendServerFiles();
+                } else if (command.equals("#enterDir")) {
+                    enterDir = in.readUTF();
                 }
             }
         } catch (Exception e) {

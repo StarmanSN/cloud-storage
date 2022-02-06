@@ -1,0 +1,10 @@
+//BIMx
+//Copyright 2002-2013  Graphisoft SE  All rights reserved
+//Sat Mar 25 22:09:03 2017
+
+//0.000 InitCore
+  Program directory is 'E:\программы установленные\arhicad\Расширения ArchiCAD\BIMx\'
+  Incoming path is 'E:\программы установленные\arhicad\Расширения ArchiCAD\BIMx\BIMx.apx'
+
+//0.014 Shutdown
+  Shutting down core
