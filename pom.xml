@@ -6,11 +6,18 @@
 
     <groupId>com.geekbrains.cloud.jan.</groupId>
     <artifactId>cloud-storage</artifactId>
+    <packaging>pom</packaging>
     <version>1.0</version>
+    <modules>
+        <module>server</module>
+        <module>client</module>
+        <module>core</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <surefire.version>2.22.2</surefire.version>
     </properties>
 
     <dependencies>
@@ -28,6 +35,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
