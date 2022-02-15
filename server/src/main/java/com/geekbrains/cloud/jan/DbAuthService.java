@@ -3,9 +3,6 @@ package com.geekbrains.cloud.jan;
 import java.sql.*;
 import java.util.Optional;
 
-/**
- * Пока как шаблон
- */
 public class DbAuthService implements AuthService {
 
     private static Connection connection;

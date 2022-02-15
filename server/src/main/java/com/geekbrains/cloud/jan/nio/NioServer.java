@@ -1,6 +1,6 @@
 package com.geekbrains.cloud.jan.nio;
 
-import com.geekbrains.cloud.jan.Constants;
+import com.geekbrains.cloud.jan.model.Constants;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -3,19 +3,32 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.geekbrains.cloud.jan.Client">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="430.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.geekbrains.cloud.jan.Client">
+    <AnchorPane fx:id="loginPane" prefHeight="400.0" prefWidth="600.0" visible="true" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <TextField fx:id="loginField" layoutX="14.0" layoutY="28.0" prefWidth="253.0" promptText="Enter login"/>
+        <PasswordField fx:id="passwordField" layoutX="333.0" layoutY="28.0" prefWidth="253.0"
+                       promptText="Enter password"/>
 
-      <ListView fx:id="clientView" layoutX="14.0" layoutY="41.0" prefHeight="348.0" prefWidth="248.0"/>
-      <ListView fx:id="serverView" layoutX="338.0" layoutY="41.0" prefHeight="348.0" prefWidth="248.0"/>
+        <Button fx:id="authButton" layoutX="14.0" layoutY="70.0" mnemonicParsing="false" onAction="#authorize"
+                prefHeight="14.0" prefWidth="572.0" text="Sign in"/>
+    </AnchorPane>
+    <AnchorPane fx:id="workingPane" prefHeight="400.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ListView fx:id="clientView" layoutX="14.0" layoutY="67.0" prefHeight="348.0" prefWidth="248.0" />
+        <ListView fx:id="serverView" layoutX="338.0" layoutY="67.0" prefHeight="348.0" prefWidth="248.0" />
 
-      <Button layoutX="280.0" layoutY="120.0" mnemonicParsing="false" onAction="#upload" prefHeight="40.0" prefWidth="40.0" text="&gt;" />
-      <Button layoutX="280.0" layoutY="221.0" mnemonicParsing="false" onAction="#download" prefHeight="40.0" prefWidth="40.0" text="&lt;" />
+        <Button layoutX="280.0" layoutY="142.0" mnemonicParsing="false" onAction="#upload" prefHeight="40.0" prefWidth="40.0" text="&gt;" />
+        <Button layoutX="280.0" layoutY="250.0" mnemonicParsing="false" onAction="#download" prefHeight="40.0" prefWidth="40.0" text="&lt;" />
 
-   <Button onAction="#backClientPath" layoutX="221.0" layoutY="14.0" mnemonicParsing="false" text="Back" />
-   <Button onAction="#backServerPath" layoutX="545.0" layoutY="14.0" mnemonicParsing="false" text="Back" />
+        <Button layoutX="221.0" layoutY="39.0" mnemonicParsing="false" onAction="#backClientPath" text="Back" />
+        <Button layoutX="545.0" layoutY="39.0" mnemonicParsing="false" onAction="#backServerPath" text="Back" />
+     <!--   <Button layoutX="275.0" layoutY="39.0" mnemonicParsing="false" onAction="#delFolder" text="Delete" />
+        <Button layoutX="275.0" layoutY="88.0" mnemonicParsing="false" onAction="#createFolder" text="create" />-->
 
-   <TextField fx:id="clientPath" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="197.0" editable="false"/>
-   <TextField fx:id="serverPath" layoutX="338.0" layoutY="14.0" prefHeight="25.0" prefWidth="197.0" editable="false"/>
-
+        <TextField fx:id="clientPath" editable="false" layoutX="14.0" layoutY="39.0" prefHeight="25.0" prefWidth="197.0" />
+        <TextField fx:id="serverPath" editable="false" layoutX="338.0" layoutY="39.0" prefHeight="25.0" prefWidth="197.0" />
+    </AnchorPane>
 </AnchorPane>
