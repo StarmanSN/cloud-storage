@@ -1,3 +1,4 @@
+/*
 package com.geekbrains.cloud.jan.model;
 
 
@@ -18,11 +19,14 @@ public class Main {
         c.setParent(b);
         System.out.println(c);
 
-        /*System.out.println(a.hashCode());
+        */
+/*System.out.println(a.hashCode());
         System.out.println(b.hashCode());
 
         System.out.println(a);
-        System.out.println(b);*/
+        System.out.println(b);*//*
+
 
     }
 }
+*/

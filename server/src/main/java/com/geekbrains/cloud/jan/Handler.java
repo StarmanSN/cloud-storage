@@ -71,7 +71,7 @@ public class Handler implements Runnable {
                 if (nick.isPresent()) {
                     name = nick.get();
                     sendMessage(Constants.AUTH_OK_COMMAND + " " + nick);
-                    server.broadcastMessage(nick + " вошел в чат");
+                    server.broadcastMessage(nick + " вошел");
                     server.broadcastMessage(server.getActiveClients());
                     server.subscribe(this);
                     return;

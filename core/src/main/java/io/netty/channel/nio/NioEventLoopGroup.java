@@ -1,3 +1,4 @@
+/*
 package io.netty.channel.nio;
 
 import io.netty.channel.*;
@@ -154,3 +155,4 @@ public class NioEventLoopGroup implements EventLoopGroup {
 
     }
 }
+*/

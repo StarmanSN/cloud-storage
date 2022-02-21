@@ -2,7 +2,6 @@ package com.geekbrains.cloud.jan.netty;
 
 import com.geekbrains.cloud.jan.AuthService;
 import com.geekbrains.cloud.jan.BaseAuthService;
-import com.geekbrains.cloud.jan.DbAuthService;
 import com.geekbrains.cloud.jan.Handler;
 import com.geekbrains.cloud.jan.model.Constants;
 import io.netty.bootstrap.ServerBootstrap;
