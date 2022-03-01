@@ -18,7 +18,7 @@ public class CloudServerHandler extends SimpleChannelInboundHandler<CloudMessage
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        // init client dir
+
         currentDir = Paths.get("data");
         sendList(ctx);
     }

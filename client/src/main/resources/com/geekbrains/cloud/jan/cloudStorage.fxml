@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="449.0"
+            prefWidth="600.0" style="-fx-background-color: #2E3348;" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.geekbrains.cloud.jan.Client">
+    <children>
+        <AnchorPane layoutY="45.0" prefHeight="408.0" prefWidth="600.0" style="-fx-background-color: silver;">
+            <children>
+                <ListView fx:id="clientView" layoutX="14.0" layoutY="54.0" prefHeight="334.0" prefWidth="235.0" />
+                <ListView fx:id="serverView" layoutX="351.0" layoutY="54.0" prefHeight="334.0" prefWidth="235.0" />
+
+                <Button layoutX="283.0" layoutY="233.0" mnemonicParsing="false" onAction="#upload" prefHeight="32.0" prefWidth="33.0" style="-fx-background-radius: 5;" text="&gt;" />
+                <Button layoutX="283.0" layoutY="172.0" mnemonicParsing="false" onAction="#download" prefHeight="32.0" prefWidth="33.0" style="-fx-background-radius: 5;" text="&lt;" />
+
+                <Button layoutX="227.0" layoutY="22.0" mnemonicParsing="false" onAction="#backClientPath" style="-fx-background-radius: 5;" text=".." />
+                <Button layoutX="564.0" layoutY="22.0" mnemonicParsing="false" onAction="#backServerPath" style="-fx-background-radius: 5;" text=".." />
+               <!-- <Button layoutX="275.0" layoutY="83.0" mnemonicParsing="false" onAction="#delFolder"
+                        style="-fx-background-radius: 5;" text="delete"/>
+                <Button layoutX="275.0" layoutY="125.0" mnemonicParsing="false" onAction="#createFolder"
+                        style="-fx-background-radius: 5;" text="create"/>-->
+                <TextField fx:id="clientPath" editable="false" layoutX="14.0" layoutY="22.0" prefHeight="25.0" prefWidth="206.0" style="-fx-background-radius: 5;" />
+                <TextField fx:id="serverPath" editable="false" layoutX="351.0" layoutY="22.0" prefHeight="25.0" prefWidth="206.0" style="-fx-background-radius: 5;" />
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

@@ -9,4 +9,11 @@ public class Constants {
     public static final String AUTH_OK_COMMAND = "/authok";
     public static final String CHECK_COMMAND = "/";
 
+    public static final String USER_TABLE = "users";
+    public static final String USERS_FIRSTNAME = "first_name";
+    public static final String USERS_LASTNAME = "last_name";
+    public static final String USERS_USERNAME = "user_name";
+    public static final String USERS_PASSWORD = "password";
+
+
 }

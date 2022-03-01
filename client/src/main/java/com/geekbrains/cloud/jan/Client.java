@@ -10,17 +10,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
@@ -33,11 +27,6 @@ public class Client implements Initializable {
 
     public TextField clientPath;
     public TextField serverPath;
-    public AnchorPane loginPane;
-    public TextField loginField;
-    public PasswordField passwordField;
-    public AnchorPane workingPane;
-    public Button authButton;
     private Path clientDir;
     public ListView<String> clientView;
     public ListView<String> serverView;
@@ -45,26 +34,6 @@ public class Client implements Initializable {
     private ObjectEncoderOutputStream out;
     private CloudMessageProcessor processor;
     private String message;
-    private Socket socket;
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
-    private String login = null;
-    private boolean isAuthorized;
-
-    public void setAuthorized(boolean isAuthorized) {
-        this.isAuthorized = isAuthorized;
-        if (!isAuthorized) {
-            loginPane.setVisible(true);
-            loginPane.setManaged(true);
-            workingPane.setVisible(false);
-            workingPane.setManaged(false);
-        } else {
-            loginPane.setVisible(false);
-            loginPane.setManaged(false);
-            workingPane.setVisible(true);
-            workingPane.setManaged(true);
-        }
-    }
 
     private void readLoop() {
         try {
@@ -72,26 +41,12 @@ public class Client implements Initializable {
                 CloudMessage message = (CloudMessage) in.readObject();
                 log.info("received: {}", message);
                 processor.processMessage(message);
-                if (message.equals(Constants.AUTH_OK_COMMAND)) {
-                    setAuthorized(true);
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    /*private void openConnection() throws IOException {
-        socket = new Socket(Constants.SERVER_ADRESS, Constants.SERVER_PORT);
-        dataInputStream = new DataInputStream(socket.getInputStream());
-        dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        String str = dataInputStream.readUTF();
-        if (str.startsWith(Constants.AUTH_OK_COMMAND)) {
-            String[] tokens = str.split("\\s+");
-            this.login = tokens[1];
-        }
-    }*/
 
-    @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -101,11 +56,6 @@ public class Client implements Initializable {
             System.out.println("Network created...");
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
             in = new ObjectDecoderInputStream(socket.getInputStream());
-            String str = in.readUTF();
-            if (str.startsWith(Constants.AUTH_OK_COMMAND)) {
-                String[] tokens = str.split("\\s+");
-                this.login = tokens[1];
-            }
             updateClientView();
             updateServerPath();
             initMouseListeners();
@@ -173,7 +123,6 @@ public class Client implements Initializable {
         out.writeObject(new FileRequest(fileName));
     }
 
-
     @FXML
     private void backClientPath(ActionEvent actionEvent) {
         if (!clientDir.equals(clientDir.getRoot())) {
@@ -191,9 +140,14 @@ public class Client implements Initializable {
         }
     }
 
-    /*public boolean delFile(ActionEvent actionEvent) {
+
+    /*@FXML
+    public boolean delFile(ActionEvent actionEvent) {
+
+
         String filePathAndName = null;
         boolean bea = false;
+
         try {
             String filePath = filePathAndName;
             File myDelFile = new File(filePath);
@@ -209,8 +163,10 @@ public class Client implements Initializable {
         }
         return bea;
     }
+
+    @FXML
     public String createFolder(ActionEvent actionEvent) {
-        String folderPath = null;
+        String folderPath = "data";
         String txt = folderPath;
         try {
             java.io.File myFilePath = new java.io.File(txt);
@@ -218,8 +174,7 @@ public class Client implements Initializable {
             if (!myFilePath.exists()) {
                 myFilePath.mkdir();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             message = "Ошибка создания каталога";
         }
         return txt;
@@ -230,6 +185,7 @@ public class Client implements Initializable {
         String folderPath = null;
         try {
             String filePath = folderPath;
+            assert filePath != null;
             filePath = filePath.toString();
             java.io.File myFilePath = new java.io.File(filePath);
             myFilePath.delete(); // Удалить пустую папку
@@ -237,15 +193,4 @@ public class Client implements Initializable {
             message = ("Ошибка удаления папки");
         }
     }*/
-    @FXML
-    public void authorize(ActionEvent actionEvent) {
-        try {
-            dataOutputStream.writeUTF(Constants.AUTH_COMMAND + " " + loginField.getText() + " " + passwordField.getText());
-            loginField.clear();
-            passwordField.clear();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
 }

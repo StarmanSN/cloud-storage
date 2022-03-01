@@ -1,3 +1,4 @@
+/*
 package com.geekbrains.cloud.jan;
 
 import java.util.ArrayList;
@@ -45,3 +46,4 @@ public class BaseAuthService implements AuthService {
         }
     }
 }
+*/

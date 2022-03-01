@@ -4,5 +4,5 @@ public enum CommandType {
     FILE,
     FILE_REQUEST,
     LIST,
-    FOLDER
+    FOLDER;
 }
