@@ -12,15 +12,25 @@ import java.util.stream.Collectors;
 public class ListMessage implements CloudMessage {
 
     private final List<String> files;
+    private final String serverDir;
 
     public ListMessage(Path path) throws IOException {
         files = Files.list(path)
                 .map(p -> p.getFileName().toString())
                 .collect(Collectors.toList());
+        serverDir = path.getFileName().toString();
     }
 
     @Override
     public CommandType getType() {
         return CommandType.LIST;
+    }
+
+    public List<String> getFiles() {
+        return files;
+    }
+
+    public String getServerDir() {
+        return serverDir;
     }
 }

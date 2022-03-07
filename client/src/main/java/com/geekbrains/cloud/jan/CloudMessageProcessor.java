@@ -1,9 +1,6 @@
 package com.geekbrains.cloud.jan;
 
-import com.geekbrains.cloud.jan.model.CloudMessage;
-import com.geekbrains.cloud.jan.model.FileMessage;
-import com.geekbrains.cloud.jan.model.FileRequest;
-import com.geekbrains.cloud.jan.model.ListMessage;
+import com.geekbrains.cloud.jan.model.*;
 import javafx.application.Platform;
 import javafx.scene.control.ListView;
 
@@ -33,6 +30,9 @@ public class CloudMessageProcessor {
                 break;
             case FILE_REQUEST:
                 processMessage((FileRequest) message);
+                break;
+            case LIST_REQUEST:
+                processMessage((ListRequest) message);
                 break;
         }
     }

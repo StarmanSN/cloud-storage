@@ -1,9 +1,6 @@
 package com.geekbrains.cloud.jan.netty;
 
-import com.geekbrains.cloud.jan.model.CloudMessage;
-import com.geekbrains.cloud.jan.model.FileMessage;
-import com.geekbrains.cloud.jan.model.FileRequest;
-import com.geekbrains.cloud.jan.model.ListMessage;
+import com.geekbrains.cloud.jan.model.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -11,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static java.nio.file.Files.isDirectory;
 
 public class CloudServerHandler extends SimpleChannelInboundHandler<CloudMessage> {
 
@@ -33,6 +32,9 @@ public class CloudServerHandler extends SimpleChannelInboundHandler<CloudMessage
                 processFileMessage((FileMessage) cloudMessage);
                 sendList(ctx);
                 break;
+            case LIST_REQUEST:
+                processListRequest((ListRequest) cloudMessage, ctx);
+                break;
         }
     }
 
@@ -47,5 +49,15 @@ public class CloudServerHandler extends SimpleChannelInboundHandler<CloudMessage
     private void processFileRequest(FileRequest cloudMessage, ChannelHandlerContext ctx) throws IOException {
         Path path = currentDir.resolve(cloudMessage.getFileName());
         ctx.writeAndFlush(new FileMessage(path));
+    }
+
+    private void processListRequest(ListRequest cloudMessage, ChannelHandlerContext ctx) throws IOException {
+        if (cloudMessage.isUpper()) {
+            currentDir = currentDir.getParent();
+            sendList(ctx);
+        } else if (isDirectory(currentDir.resolve(cloudMessage.getDirName()))) {
+            currentDir = currentDir.resolve(cloudMessage.getDirName());
+            sendList(ctx);
+        }
     }
 }

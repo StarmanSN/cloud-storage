@@ -1,26 +1,28 @@
 package com.geekbrains.cloud.jan;
 
-import com.geekbrains.cloud.jan.model.CloudMessage;
-import com.geekbrains.cloud.jan.model.Constants;
-import com.geekbrains.cloud.jan.model.FileMessage;
-import com.geekbrains.cloud.jan.model.FileRequest;
+import com.geekbrains.cloud.jan.model.*;
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
+
+import static java.nio.file.Files.delete;
 
 @Slf4j
 public class Client implements Initializable {
@@ -33,7 +35,11 @@ public class Client implements Initializable {
     private ObjectDecoderInputStream in;
     private ObjectEncoderOutputStream out;
     private CloudMessageProcessor processor;
-    private String message;
+    public TextField newDirName;
+    public Button okBtn;
+    public Button cancel;
+    public AnchorPane newDirPane;
+    public Label newTitle;
 
     private void readLoop() {
         try {
@@ -57,7 +63,6 @@ public class Client implements Initializable {
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
             in = new ObjectDecoderInputStream(socket.getInputStream());
             updateClientView();
-            updateServerPath();
             initMouseListeners();
             Thread readThread = new Thread(this::readLoop);
             readThread.setDaemon(true);
@@ -100,8 +105,7 @@ public class Client implements Initializable {
         serverView.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
                 try {
-                    out.writeUTF("#enterDir");
-                    out.writeUTF(serverView.getSelectionModel().getSelectedItem());
+                    out.writeObject(new ListRequest(false, serverView.getSelectionModel().getSelectedItem()));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -132,65 +136,55 @@ public class Client implements Initializable {
     }
 
     @FXML
-    public void backServerPath(ActionEvent actionEvent) {
-        try {
-            out.writeUTF("#backDir");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
-    /*@FXML
-    public boolean delFile(ActionEvent actionEvent) {
-
-
-        String filePathAndName = null;
-        boolean bea = false;
-
-        try {
-            String filePath = filePathAndName;
-            File myDelFile = new File(filePath);
-            if (myDelFile.exists()) {
-                myDelFile.delete();
-                bea = true;
-            } else {
-                bea = false;
-                message = (filePathAndName + "Ошибка удаления файловой операции");
-            }
-        } catch (Exception e) {
-            message = e.toString();
-        }
-        return bea;
+    public void backServerPath(ActionEvent actionEvent) throws IOException {
+        out.writeObject(new ListRequest(true));
     }
 
     @FXML
-    public String createFolder(ActionEvent actionEvent) {
-        String folderPath = "data";
-        String txt = folderPath;
-        try {
-            java.io.File myFilePath = new java.io.File(txt);
-            txt = folderPath;
-            if (!myFilePath.exists()) {
-                myFilePath.mkdir();
+    public void createClientFolder(ActionEvent actionEvent) {
+        Platform.runLater(() -> {
+            newDirName.setText("");
+            newTitle.setText("Введите название папки");
+            newDirPane.setVisible(true);
+        });
+        okBtn.setOnMouseClicked(e -> {
+            if (!newDirName.getText().equals("")) {
+                try {
+                    Files.createDirectory(clientDir.resolve(newDirName.getText()));
+                } catch (IOException ex) {
+                    log.error(ex.getMessage());
+                }
+                newDirPane.setVisible(false);
+                updateClientView();
             }
-        } catch (Exception e) {
-            message = "Ошибка создания каталога";
-        }
-        return txt;
+        });
+        cancel.setOnMouseClicked(e -> {
+            newDirPane.setVisible(false);
+        });
     }
 
     @FXML
-    public void delFolder(ActionEvent actionEvent) {
-        String folderPath = null;
-        try {
-            String filePath = folderPath;
-            assert filePath != null;
-            filePath = filePath.toString();
-            java.io.File myFilePath = new java.io.File(filePath);
-            myFilePath.delete(); // Удалить пустую папку
-        } catch (Exception e) {
-            message = ("Ошибка удаления папки");
+    public void delInClient(ActionEvent actionEvent) {
+        if (!clientView.getSelectionModel().isEmpty()) {
+            Platform.runLater(() -> {
+                newDirName.setVisible(false);
+                newTitle.setText("Вы действительно хотите удалить?");
+                newDirPane.setVisible(true);
+            });
+            okBtn.setOnMouseClicked(e -> {
+                try {
+                    delete(clientDir.resolve(clientView.getSelectionModel().getSelectedItem()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                newDirPane.setVisible(false);
+                newDirName.setVisible(true);
+                updateClientView();
+            });
+            cancel.setOnMouseClicked(e -> {
+                newDirPane.setVisible(false);
+                newDirName.setVisible(true);
+            });
         }
-    }*/
+    }
 }
