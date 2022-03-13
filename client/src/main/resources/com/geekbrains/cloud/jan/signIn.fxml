@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.geekbrains.cloud.jan.SignInController">
+    <AnchorPane fx:id="loginPane" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #2E3348;"
+                visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0">
+        <AnchorPane layoutY="86.0" prefHeight="342.0" prefWidth="600.0" style="-fx-background-color: #fafafa;">
+            <children>
+                <TextField fx:id="loginField" layoutX="174.0" layoutY="104.0" prefWidth="253.0" promptText="Enter login"
+                           style="-fx-background-radius: 5;"/>
+
+                <Button fx:id="authButton" layoutX="251.0" layoutY="199.0" mnemonicParsing="false"
+                        prefHeight="43.0" prefWidth="99.0" style="-fx-background-radius: 5;" text="Войти">
+                    <font>
+                        <Font name="Ebrima" size="24.0"/>
+                    </font>
+                </Button>
+                <PasswordField fx:id="passwordField" layoutX="174.0" layoutY="146.0" prefWidth="253.0"
+                               promptText="Enter password" style="-fx-background-radius: 5;"/>
+                <Label layoutX="217.0" layoutY="30.0" prefHeight="43.0" prefWidth="167.0" text="Авторизация">
+                    <font>
+                        <Font name="Segoe Print" size="23.0"/>
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <Button fx:id="loginSignUpButton" layoutX="400.0" layoutY="28.0" mnemonicParsing="false"
+                prefHeight="31.0" prefWidth="175.0" style="-fx-background-color: #D2691E; -fx-background-radius: 5;"
+                text="Зарегистрироваться" textFill="WHITE">
+            <font>
+                <Font name="Eras Bold ITC" size="16.0"/>
+            </font>
+        </Button>
+    </AnchorPane>
+</AnchorPane>
